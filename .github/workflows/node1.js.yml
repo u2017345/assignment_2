@@ -25,11 +25,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-      working-directory: assignment_2/my-app
+      working-directory: my-app
     - run: npm run build --if-present
-      working-directory: assignment_2/my-app
+      working-directory: my-app
     - run: npm test
-      working-directory: assignment_2/my-app
+      working-directory: my-app
 
     - name: Deploy 
       run: | 
