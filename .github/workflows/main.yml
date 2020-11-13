@@ -13,21 +13,33 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    strategy:
+      matrix:
+        node-version: [12.x]
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+      working-directory: my-app
+    - run: npm run build --if-present
+      working-directory: my-app
+    - run: npm test
+      working-directory: my-app
+    - name: Deploy
+      run: |
+       git config --global user.name $user_name
+       git config --global user.email $user_email 
+       git remote set-url origin https://${github_token}@github.com/${repository}
+       npm run deploy
+       working-directory: my-app
+      env:
+       user_name: 'github-actions[bot]'
+       user_email: 'github-actions[bot]@users.noreply.github.com'
+       github_token: ${{ secrets.New_develop_secret }}
+       repository: ${{ github.repository }} 
