@@ -12,8 +12,10 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  build:
+     
   # This workflow contains a single job called "build"
-  runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
